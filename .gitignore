@@ -1,0 +1,39 @@
+
+# macOS
+.DS_Store
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# Cursor local state
+.cursorignore
+
+# Android / Gradle
+.gradle/
+**/build/
+local.properties
+.externalNativeBuild/
+.cxx/
+captures/
+
+# Signing credentials
+*.jks
+*.keystore
+keystore.properties
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# Uploaded local test files
+mock-api/uploads/*
+!mock-api/uploads/.gitkeep
