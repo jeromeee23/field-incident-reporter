@@ -1,0 +1,88 @@
+---
+description: Project overview, scope, technology stack, and core product decisions
+alwaysApply: true
+---
+
+# Project Context
+
+## Project Overview
+
+Field Incident Reporter is an Android application designed for field technicians to report, view, update, and manage physical incidents.
+
+The repository contains two independent projects:
+- `android/` — Native Android application.
+- `mock-api/` — Local Node.js mock REST API.
+
+## Technology Stack
+
+### Android
+- Kotlin
+- Jetpack Compose
+- MVVM
+- Clean Architecture principles
+- Kotlin Coroutines and Flow
+- Retrofit and OkHttp
+- Hilt for dependency injection
+- Navigation Compose
+
+### Mock API
+- Node.js
+- JSON Server for mock API
+- REST API
+
+## Product Scope
+
+The application must support:
+
+1. Create an incident report.
+2. View submitted incident reports.
+3. View incident details.
+4. Edit an existing incident.
+5. Remove an incident permanently.
+6. Capture and attach incident photos.
+
+## Incident Status Workflow
+
+Supported statuses:
+
+- OPEN
+- IN_PROGRESS
+- COMPLETED
+- CANCELLED
+
+Main workflow:
+
+OPEN → IN_PROGRESS → COMPLETED
+
+Cancellation is a separate status path.
+
+Home screen tabs:
+- Active — OPEN and IN_PROGRESS
+- Completed — COMPLETED
+- Cancelled — CANCELLED
+
+Do not introduce additional statuses without explicit approval.
+
+## Product UX Decisions
+
+- Create, Details, and Edit are separate screens.
+- Successful creation navigates to the newly created incident's Details screen.
+- Cancelling and permanently deleting an incident are separate operations.
+- Show confirmation dialogs before cancellation and permanent deletion.
+- API responses determine whether an operation succeeded.
+- Do not display fake success states.
+- Support loading, empty, error, and retry states.
+
+## Engineering Principles
+
+- Prioritize correctness, maintainability, and clear architecture.
+- Keep implementations simple and do not over-engineered.
+- Avoid unnecessary abstractions and dependencies.
+- Do not introduce a local database unless explicitly approved.
+- Never expose secrets, credentials, or private configuration.
+
+## Decision Management
+
+- Treat explicitly approved product and architecture decisions as project requirements.
+- Do not silently change existing decisions.
+- If a requirement is ambiguous or conflicts with an existing decision, explain the issue and ask before proceeding.

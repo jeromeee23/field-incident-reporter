@@ -1,0 +1,77 @@
+---
+description: Kotlin coding conventions, readability, and best practices
+globs: android/**/*.kt
+alwaysApply: false
+---
+
+# Kotlin Coding Standards
+
+## General Coding Practices
+
+- Follow idiomatic Kotlin conventions.
+- Prefer `val` over `var` whenever possible.
+- Use meaningful and descriptive names for classes, functions, properties, and variables.
+- Keep functions focused on a single responsibility.
+- Avoid deeply nested conditions and unnecessarily complex logic.
+- Prefer simple and readable implementations over clever or overly compact code.
+- Avoid unnecessary abstractions and premature optimization.
+
+## Null Safety
+
+- Use Kotlin's null safety features properly.
+- Avoid using the non-null assertion operator (`!!`) unless absolutely justified.
+- Prefer safe calls, Elvis operators, and explicit null handling.
+- Do not introduce nullable types when a non-null type is sufficient.
+
+## Object-Oriented Design
+
+- Apply SOLID principles where appropriate without overengineering.
+- Prefer composition over unnecessary inheritance.
+- Use interfaces when they provide meaningful abstraction or enable dependency inversion.
+- Keep classes focused and cohesive.
+- Use constructor injection for dependencies.
+
+## Coroutines and Flow
+
+- Use structured concurrency.
+- Never block the main thread.
+- Use appropriate coroutine dispatchers for blocking or CPU-intensive operations.
+- Handle coroutine cancellation correctly.
+- Never swallow `CancellationException`.
+- Avoid unnecessary coroutine scopes and unmanaged jobs.
+- Use Flow operators appropriately and avoid unnecessary transformations.
+
+## Error Handling
+
+- Avoid empty catch blocks.
+- Do not silently ignore unexpected exceptions.
+- Preserve meaningful error information.
+- Do not use exceptions for ordinary control flow.
+- Avoid exposing implementation-specific exceptions outside their intended layer.
+
+## Code Quality
+
+- Avoid duplicated logic.
+- Extract reusable logic only when it provides clear value.
+- Keep business logic out of Composables.
+- Avoid hardcoded values when they should be constants or configuration.
+- Remove unused imports, variables, and code.
+- Do not leave placeholder implementations or TODO comments without an explicit reason.
+
+## Reusability and Shared Components
+
+- Identify common logic that can be reused across multiple features or components.
+- Extract reusable logic into dedicated helper classes, utility functions, or shared components when it provides clear value.
+- Avoid duplicating the same implementation across multiple files.
+- Place reusable code in an appropriate shared package based on its responsibility.
+- Avoid creating generic helper classes or utility containers without a clear purpose.
+- Keep helpers focused on a single responsibility.
+- Do not introduce abstractions solely for the sake of reusability.
+
+
+## Maintainability
+
+- Follow existing naming and package conventions.
+- Keep changes consistent with the established project architecture.
+- Do not introduce new libraries or coding patterns without a clear justification.
+- Prioritize readability and maintainability over reducing line count.

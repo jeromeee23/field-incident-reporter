@@ -1,0 +1,118 @@
+---
+description: Android architecture, package organization, and implementation boundaries
+globs: android/**/*.kt
+alwaysApply: false
+---
+
+# Android Architecture Rules
+
+## Architecture
+
+Use MVVM with Clean Architecture principles.
+
+Recommended logical layers:
+
+- Presentation
+- Domain
+- Data
+- Core
+
+## Dependency Direction
+
+- Presentation depends on Domain.
+- Data implements Domain repository interfaces.
+- Domain must not depend on Android framework, Retrofit, or Compose.
+- Core contains shared infrastructure and reusable components.
+
+Do not allow dependencies to flow in the wrong direction.
+
+## Presentation Layer
+
+- Use Jetpack Compose for UI.
+- Use ViewModels to manage screen state and UI-related logic.
+- Expose screen state using StateFlow.
+- Use SharedFlow or Channel for one-time UI events when appropriate.
+- Collect flows using lifecycle-aware collection.
+- Do not call Retrofit APIs directly from Composables or ViewModels.
+- Keep Composables focused on rendering and user interactions.
+
+## UI State Organization
+
+- Define screen UI states using dedicated immutable data classes.
+- Keep primary UI state data classes in separate files from their corresponding ViewModels.
+- Organize UI state files within their respective feature and screen packages.
+- Prefer a single primary UiState data class per screen to represent its complete UI state.
+- Keep UI state focused on presentation requirements.
+- Define separate UI event classes when one-time events require explicit modeling.
+- Extract shared state models only when multiple screens genuinely share the same responsibility.
+- Avoid creating unnecessary state classes for simple local or temporary UI values.
+- Do not place unrelated screen states in a single shared state file.
+
+## UI State Management
+
+- Model UI state based on meaningful screen-specific conditions.
+- Avoid relying exclusively on generic Success and Error states when the screen requires more descriptive states.
+- Use immutable data classes or sealed interfaces/classes depending on the complexity of the screen.
+- State names must clearly communicate the UI condition they represent.
+- Keep screen data and related UI state together when using data class-based state management.
+- Support loading, content, empty, and error states where applicable.
+- Preserve existing content during refresh operations when appropriate.
+- Keep UI state transitions predictable and explicit.
+- Use StateFlow to expose the current screen state.
+- Use SharedFlow or Channel for one-time UI events, not persistent screen state.
+
+## Domain Layer
+
+The Domain layer must contain business models, repository interfaces, and use cases.
+
+### UseCase Pattern
+
+- UseCases must represent distinct business operations.
+- Each UseCase must have a single, clearly defined responsibility.
+- UseCases must depend on repository interfaces, never on concrete Data layer implementations.
+- ViewModels must invoke UseCases instead of directly accessing repositories.
+- UseCases must use constructor injection.
+- UseCases should expose a single `operator fun invoke()` when appropriate.
+- Use suspend functions for one-shot asynchronous operations and Flow for stream-based operations.
+- Keep business logic inside the Domain layer, not in ViewModels.
+- Avoid unnecessary UseCases that only introduce boilerplate without meaningful separation of responsibility.
+
+### Repository Contracts
+
+- Define repository interfaces in the Domain layer.
+- Repository interfaces must expose domain models, not API DTOs.
+- Data layer implementations must fulfill these contracts.
+
+### Domain Independence
+
+- Domain must not depend on Android framework, Jetpack Compose, Retrofit, or infrastructure-specific implementations.
+
+## Data Layer
+
+- Implement repository interfaces from the Domain layer.
+- Keep API DTOs separate from domain models.
+- Use mappers to convert DTOs into domain models.
+- Handle network and data errors explicitly.
+- Keep Retrofit and OkHttp implementation details inside the Data/Core infrastructure.
+
+## Data Layer - API Response and Error Handling
+
+- Keep API response processing separate from Repository implementations.
+- Use dedicated reusable components to handle HTTP responses and API errors.
+- Centralize API error parsing and exception normalization.
+- Handle network connectivity errors, HTTP errors, parsing errors, and unexpected exceptions consistently.
+- Repository implementations must coordinate API calls, DTO mapping, and domain-level results.
+- Avoid duplicating try-catch blocks and HTTP error parsing logic across repositories.
+- Do not expose Retrofit Response objects, API DTOs, or raw HTTP exceptions to the Domain or Presentation layers.
+- Use a consistent error representation at the repository boundary.
+- Preserve meaningful server error messages when available.
+- Do not silently convert failed API requests into successful empty responses.
+
+## Coroutines and Flow
+
+- Use suspend functions for one-shot asynchronous operations.
+- Use Flow for asynchronous streams.
+- Use StateFlow for observable UI state.
+- Use SharedFlow or Channel for one-time events when appropriate.
+- Never block the main thread.
+- Handle coroutine cancellation correctly.

@@ -1,0 +1,53 @@
+---
+description: Required workflow for AI-assisted implementation and code changes
+alwaysApply: true
+---
+
+# Implementation Workflow
+
+## Before Making Changes
+
+1. Inspect the existing project structure and relevant source files.
+2. Understand the current implementation before modifying it.
+3. Identify the files and components affected.
+4. Explain the proposed implementation briefly.
+5. Identify potential risks or architectural impacts.
+
+Do not immediately generate large amounts of code without understanding the existing implementation.
+
+## During Implementation
+
+- Follow the existing project architecture and coding conventions.
+- Keep changes scoped to the requested task.
+- Avoid unrelated refactoring.
+- Avoid duplicating existing functionality.
+- Prefer simple, maintainable solutions.
+- Do not introduce dependencies without explaining why they are needed.
+- Do not overwrite existing working implementations without a clear reason.
+
+## After Implementation
+
+1. Review the modified files.
+2. Check for compilation errors.
+3. Run relevant tests when available.
+4. Run the appropriate build command when applicable.
+5. Report exactly what was changed.
+6. Report tests and builds that were actually executed.
+7. Explicitly disclose any failures or unverified behavior.
+
+Never claim that a test, build, or verification passed if it was not executed.
+
+## When Requirements Are Unclear
+
+- Do not invent product requirements.
+- Do not silently change approved decisions.
+- Present reasonable alternatives.
+- Ask for clarification before implementing decisions that materially affect architecture, data models, or user experience.
+
+## AI Collaboration
+
+The developer makes final product and engineering decisions.
+
+AI-generated code must be understandable, reviewable, and maintainable.
+
+Do not optimize for generating the maximum amount of code. Optimize for correctness and engineering quality.
