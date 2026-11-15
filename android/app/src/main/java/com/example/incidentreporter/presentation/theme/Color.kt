@@ -1,4 +1,4 @@
-package com.example.incidentreporter.ui.theme
+package com.example.incidentreporter.presentation.theme
 
 import androidx.compose.ui.graphics.Color
 
