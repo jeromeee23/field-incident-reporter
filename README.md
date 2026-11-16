@@ -17,6 +17,15 @@ A native Android application for field technicians to report, track, and manage 
 
 ---
 
+## Demo Video
+
+A short walkthrough of the Field Incident Reporter application,
+demonstrating its main features and workflows.
+
+[Watch or download the demo video](https://github.com/jeromeee23/field-incident-reporter/releases/tag/v1.0.0)
+
+---
+
 ## Tech Stack
 
 ### Android
