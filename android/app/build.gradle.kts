@@ -20,7 +20,9 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField("String", "BASE_URL", "\"http://10.0.2.2:3000/\"")
+        val apiBaseUrl = (project.findProperty("API_BASE_URL") as String?)
+            ?: "http://10.0.2.2:3000/"
+        buildConfigField("String", "BASE_URL", "\"$apiBaseUrl\"")
     }
 
     buildTypes {
