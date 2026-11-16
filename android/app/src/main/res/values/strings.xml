@@ -1,3 +1,35 @@
 <resources>
-    <string name="app_name">FieldIncidentReporter</string>
+    <string name="app_name">Field Incident Reporter</string>
+    <string name="home_title">Field Incident Reporter</string>
+    <string name="home_subtitle">Manage field incident reports</string>
+    <string name="home_search">Search</string>
+    <string name="home_tab_active">Active</string>
+    <string name="home_tab_completed">Completed</string>
+    <string name="home_tab_cancelled">Cancelled</string>
+    <string name="home_tab_with_count">%1$s %2$d</string>
+    <string name="home_create_report">Create Report</string>
+    <string name="home_empty_active_title">No Active Reports</string>
+    <string name="home_empty_active_message">There are no active incidents yet. Create a new report to get started.</string>
+    <string name="home_empty_completed_title">No Completed Reports</string>
+    <string name="home_empty_completed_message">Completed incident reports will appear here.</string>
+    <string name="home_empty_cancelled_title">No Cancelled Reports</string>
+    <string name="home_empty_cancelled_message">Cancelled incident reports will appear here.</string>
+    <string name="home_error_title">Unable to load reports</string>
+    <string name="home_error_message">Please check your internet connection and try again.</string>
+    <string name="home_retry">Retry</string>
+    <string name="home_swipe_cancel">Cancel</string>
+    <string name="home_swipe_remove">Remove</string>
+    <string name="home_cancel_dialog_title">Cancel Report?</string>
+    <string name="home_cancel_dialog_message">This will change the status to Cancelled. You can still view the report in the Cancelled tab.</string>
+    <string name="home_cancel_dialog_keep">Keep Report</string>
+    <string name="home_cancel_dialog_confirm">Cancel Report</string>
+    <string name="home_remove_dialog_title">Remove Report?</string>
+    <string name="home_remove_dialog_message">This report will be permanently deleted. This action cannot be undone.</string>
+    <string name="home_remove_dialog_close">Close</string>
+    <string name="home_remove_dialog_confirm">Remove</string>
+    <string name="home_status_open">OPEN</string>
+    <string name="home_status_in_progress">IN PROGRESS</string>
+    <string name="home_status_completed">COMPLETED</string>
+    <string name="home_status_cancelled">CANCELLED</string>
+    <string name="home_incident_thumbnail">Incident photo</string>
 </resources>

@@ -1,0 +1,52 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Center dot -->
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2.5"
+        android:strokeLineCap="round"
+        android:fillColor="@android:color/transparent"
+        android:pathData="M12,21 L12,21" />
+    <!--
+        All three arcs are centered at (12, 21).
+        They bow upward. Points are at ±45° from vertical
+        (225° and 315° from the positive-x axis in screen coords).
+
+        r=4.5  → start (8.82, 17.82)  end (15.18, 17.82)
+        r=9    → start (5.64, 14.64)  end (18.36, 14.64)
+        r=13.5 → start (2.45, 11.45)  end (21.55, 11.45)
+
+        large-arc=0, sweep=1 produces the short upward arc.
+    -->
+    <!-- Small arc (r = 4.5) -->
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:fillColor="@android:color/transparent"
+        android:pathData="M8.82,17.82 A4.5,4.5 0 0,1 15.18,17.82" />
+    <!-- Medium arc (r = 9) -->
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:fillColor="@android:color/transparent"
+        android:pathData="M5.64,14.64 A9,9 0 0,1 18.36,14.64" />
+    <!-- Large arc (r = 13.5) -->
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:fillColor="@android:color/transparent"
+        android:pathData="M2.45,11.45 A13.5,13.5 0 0,1 21.55,11.45" />
+    <!-- Diagonal slash -->
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:fillColor="@android:color/transparent"
+        android:pathData="M3,21 L21,3" />
+</vector>
