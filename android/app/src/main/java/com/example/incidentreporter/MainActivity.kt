@@ -6,7 +6,7 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import com.example.incidentreporter.presentation.incidentlist.home.HomeScreen
+import com.example.incidentreporter.presentation.navigation.AppNavGraph
 import com.example.incidentreporter.presentation.theme.FieldIncidentReporterTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -19,7 +19,7 @@ class MainActivity : ComponentActivity() {
         )
         setContent {
             FieldIncidentReporterTheme {
-                HomeScreen()
+                AppNavGraph()
             }
         }
     }

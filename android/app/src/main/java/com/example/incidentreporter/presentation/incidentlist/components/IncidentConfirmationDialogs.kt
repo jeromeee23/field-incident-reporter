@@ -92,7 +92,7 @@ fun RemoveReportDialog(
 }
 
 @Composable
-private fun HomeActionDialog(
+internal fun HomeActionDialog(
     icon: (@Composable () -> Unit)?,
     title: String,
     message: String,

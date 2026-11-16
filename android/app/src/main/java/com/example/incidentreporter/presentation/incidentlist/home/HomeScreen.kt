@@ -41,7 +41,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.incidentreporter.R
 import com.example.incidentreporter.domain.model.Incident
@@ -80,25 +83,28 @@ fun HomeScreen(
 
     var selectedTab by rememberSaveable { mutableStateOf(HomeTab.ACTIVE) }
     val snackbarHostState = remember { SnackbarHostState() }
+    val lifecycleOwner = LocalLifecycleOwner.current
 
-    LaunchedEffect(selectedTab) {
-        when (selectedTab) {
-            HomeTab.ACTIVE -> {
-                completedViewModel.cancelLoading()
-                cancelledViewModel.cancelLoading()
-                activeViewModel.loadIncidents()
-            }
+    LaunchedEffect(selectedTab, lifecycleOwner) {
+        lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+            when (selectedTab) {
+                HomeTab.ACTIVE -> {
+                    completedViewModel.cancelLoading()
+                    cancelledViewModel.cancelLoading()
+                    activeViewModel.loadIncidents()
+                }
 
-            HomeTab.COMPLETED -> {
-                activeViewModel.cancelLoading()
-                cancelledViewModel.cancelLoading()
-                completedViewModel.loadIncidents()
-            }
+                HomeTab.COMPLETED -> {
+                    activeViewModel.cancelLoading()
+                    cancelledViewModel.cancelLoading()
+                    completedViewModel.loadIncidents()
+                }
 
-            HomeTab.CANCELLED -> {
-                activeViewModel.cancelLoading()
-                completedViewModel.cancelLoading()
-                cancelledViewModel.loadIncidents()
+                HomeTab.CANCELLED -> {
+                    activeViewModel.cancelLoading()
+                    completedViewModel.cancelLoading()
+                    cancelledViewModel.loadIncidents()
+                }
             }
         }
     }
