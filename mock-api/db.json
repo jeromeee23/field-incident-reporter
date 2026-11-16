@@ -109,42 +109,6 @@
       "updatedAt": "2026-11-16T09:48:55.691Z",
       "completedAt": "2026-11-16T09:48:55.691Z",
       "cancelledAt": null
-    },
-    {
-      "id": "2c781ffd-2f0d-4069-8faf-209a41463264",
-      "incidentNumber": "INC-0010",
-      "title": "test 2",
-      "description": "safety isuee test 1",
-      "category": "SAFETY_ISSUE",
-      "otherCategoryDescription": null,
-      "location": "Test Site",
-      "photos": [
-        {
-          "id": "565cb91b-bd3d-4e82-8821-624cc2e1a6ca",
-          "url": "http://192.168.55.102:3000/uploads/565cb91b-bd3d-4e82-8821-624cc2e1a6ca.jpg"
-        },
-        {
-          "id": "6ed845e9-bc7a-4e42-acc0-03566cc4d788",
-          "url": "http://192.168.55.102:3000/uploads/6ed845e9-bc7a-4e42-acc0-03566cc4d788.jpg"
-        },
-        {
-          "id": "3a66afbc-3959-40d9-87bb-94bb62cc0901",
-          "url": "http://192.168.55.102:3000/uploads/3a66afbc-3959-40d9-87bb-94bb62cc0901.jpg"
-        },
-        {
-          "id": "1a1fe159-d2c1-44cc-a06a-6bd883ba3376",
-          "url": "http://192.168.55.102:3000/uploads/1a1fe159-d2c1-44cc-a06a-6bd883ba3376.jpg"
-        },
-        {
-          "id": "b6b329ef-e074-4af6-9680-66e4f1849336",
-          "url": "http://192.168.55.102:3000/uploads/b6b329ef-e074-4af6-9680-66e4f1849336.jpg"
-        }
-      ],
-      "status": "COMPLETED",
-      "createdAt": "2026-11-16T09:59:27.921Z",
-      "updatedAt": "2026-11-16T10:01:55.838Z",
-      "completedAt": "2026-11-16T10:01:55.838Z",
-      "cancelledAt": null
     }
   ],
   "meta": {
