@@ -101,4 +101,12 @@
     <string name="details_retry">Retry</string>
     <string name="details_status_updated">Status updated.</string>
     <string name="details_report_cancelled">Report cancelled.</string>
+    <string name="edit_title">Edit Incident</string>
+    <string name="edit_save">Save Changes</string>
+    <string name="edit_cancel">Cancel</string>
+    <string name="edit_submitting">Saving changes</string>
+    <string name="edit_failed_title">Update Failed</string>
+    <string name="edit_failed_close">Close</string>
+    <string name="edit_failed_retry">Retry</string>
+    <string name="edit_error_title">Unable to load incident</string>
 </resources>

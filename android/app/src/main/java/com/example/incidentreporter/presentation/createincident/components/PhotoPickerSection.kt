@@ -79,8 +79,11 @@ fun PhotoPickerSection(
     var pendingCameraUri by remember { mutableStateOf<Uri?>(null) }
     var pendingCameraFile by remember { mutableStateOf<File?>(null) }
 
+    val remainingSlots = MAX_PHOTOS - photoUris.size
     val multipleGalleryLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.PickMultipleVisualMedia(MAX_PHOTOS),
+        contract = ActivityResultContracts.PickMultipleVisualMedia(
+            remainingSlots.coerceAtLeast(2),
+        ),
     ) { uris ->
         if (uris.isNotEmpty()) {
             onPhotosPicked(uris)
@@ -113,7 +116,6 @@ fun PhotoPickerSection(
         }
     }
 
-    val remainingSlots = MAX_PHOTOS - photoUris.size
     val canAddPhotos = enabled && !photosLocked && remainingSlots > 0
 
     fun launchGallery() {

@@ -19,6 +19,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.incidentreporter.presentation.createincident.CreateIncidentScreen
 import com.example.incidentreporter.presentation.createincident.IncidentCreatedScreen
+import com.example.incidentreporter.presentation.editincident.EditIncidentScreen
 import com.example.incidentreporter.presentation.incidentdetails.IncidentDetailsScreen
 import com.example.incidentreporter.presentation.incidentlist.home.HomeScreen
 
@@ -28,6 +29,7 @@ internal object AppRoutes {
     const val INCIDENT_ID_ARG = "incidentId"
     const val INCIDENT_CREATED = "incidentcreated/{$INCIDENT_ID_ARG}"
     const val INCIDENT_DETAILS = "incidentdetails/{$INCIDENT_ID_ARG}"
+    const val EDIT_INCIDENT = "editincident/{$INCIDENT_ID_ARG}"
 
     fun incidentCreated(incidentId: String): String {
         return "incidentcreated/${Uri.encode(incidentId)}"
@@ -35,6 +37,10 @@ internal object AppRoutes {
 
     fun incidentDetails(incidentId: String): String {
         return "incidentdetails/${Uri.encode(incidentId)}"
+    }
+
+    fun editIncident(incidentId: String): String {
+        return "editincident/${Uri.encode(incidentId)}"
     }
 }
 
@@ -99,7 +105,25 @@ fun AppNavGraph() {
                 IncidentDetailsScreen(
                     incidentId = incidentId,
                     onBack = { navController.popBackStack() },
-                    onEditClick = {},
+                    onEditClick = { id ->
+                        navController.navigate(AppRoutes.editIncident(id))
+                    },
+                )
+            }
+        }
+        composable(
+            route = AppRoutes.EDIT_INCIDENT,
+            arguments = listOf(
+                navArgument(AppRoutes.INCIDENT_ID_ARG) { type = NavType.StringType },
+            ),
+        ) { backStackEntry ->
+            val incidentId = backStackEntry.arguments
+                ?.getString(AppRoutes.INCIDENT_ID_ARG)
+                .orEmpty()
+            ProvideHiltViewModelStoreOwner {
+                EditIncidentScreen(
+                    incidentId = incidentId,
+                    onBack = { navController.popBackStack() },
                 )
             }
         }
