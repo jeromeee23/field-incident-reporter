@@ -1,6 +1,107 @@
 {
-  "incidents": [],
+  "incidents": [
+    {
+      "id": "d08a4369-1854-4149-97b7-fdeecb9241f8",
+      "incidentNumber": "INC-0001",
+      "title": "Open to progress case",
+      "description": "The street light at the corner is not working.",
+      "category": "INFRASTRUCTURE",
+      "otherCategoryDescription": null,
+      "location": "Main St and 1st Ave",
+      "photos": [
+        {
+          "id": "photo-1",
+          "url": "https://example.com/p1.jpg"
+        }
+      ],
+      "status": "IN_PROGRESS",
+      "createdAt": "2026-11-16T08:25:24.485Z",
+      "updatedAt": "2026-11-16T08:25:24.497Z",
+      "completedAt": null,
+      "cancelledAt": null
+    },
+    {
+      "id": "6070aa76-525c-463b-8b47-97839dc45ec3",
+      "incidentNumber": "INC-0002",
+      "title": "Broken street light",
+      "description": "The street light at the corner is not working.",
+      "category": "INFRASTRUCTURE",
+      "otherCategoryDescription": null,
+      "location": "Main St and 1st Ave",
+      "photos": [
+        {
+          "id": "photo-1",
+          "url": "https://example.com/p1.jpg"
+        }
+      ],
+      "status": "CANCELLED",
+      "createdAt": "2026-11-16T08:25:24.501Z",
+      "updatedAt": "2026-11-16T08:25:24.506Z",
+      "completedAt": null,
+      "cancelledAt": "2026-11-16T08:25:24.506Z"
+    },
+    {
+      "id": "ef5f2deb-7b1a-49b7-9528-060db680fe6d",
+      "incidentNumber": "INC-0003",
+      "title": "Progress to completed case",
+      "description": "The street light at the corner is not working.",
+      "category": "INFRASTRUCTURE",
+      "otherCategoryDescription": null,
+      "location": "Main St and 1st Ave",
+      "photos": [
+        {
+          "id": "photo-1",
+          "url": "https://example.com/p1.jpg"
+        }
+      ],
+      "status": "COMPLETED",
+      "createdAt": "2026-11-16T08:25:24.510Z",
+      "updatedAt": "2026-11-16T08:25:24.523Z",
+      "completedAt": "2026-11-16T08:25:24.523Z",
+      "cancelledAt": null
+    },
+    {
+      "id": "7f9fa9f6-3152-4941-a038-8b4349fcba02",
+      "incidentNumber": "INC-0004",
+      "title": "Broken street light",
+      "description": "The street light at the corner is not working.",
+      "category": "INFRASTRUCTURE",
+      "otherCategoryDescription": null,
+      "location": "Main St and 1st Ave",
+      "photos": [
+        {
+          "id": "photo-1",
+          "url": "https://example.com/p1.jpg"
+        }
+      ],
+      "status": "CANCELLED",
+      "createdAt": "2026-11-16T08:25:24.527Z",
+      "updatedAt": "2026-11-16T08:25:24.538Z",
+      "completedAt": null,
+      "cancelledAt": "2026-11-16T08:25:24.538Z"
+    },
+    {
+      "id": "b4b5c1dc-a519-47db-a8df-683472ee7b37",
+      "incidentNumber": "INC-0005",
+      "title": "Broken street light",
+      "description": "The street light at the corner is not working.",
+      "category": "INFRASTRUCTURE",
+      "otherCategoryDescription": null,
+      "location": "Main St and 1st Ave",
+      "photos": [
+        {
+          "id": "photo-1",
+          "url": "https://example.com/p1.jpg"
+        }
+      ],
+      "status": "OPEN",
+      "createdAt": "2026-11-16T08:25:24.541Z",
+      "updatedAt": "2026-11-16T08:25:24.541Z",
+      "completedAt": null,
+      "cancelledAt": null
+    }
+  ],
   "meta": {
-    "lastIncidentNumber": 0
+    "lastIncidentNumber": 6
   }
 }

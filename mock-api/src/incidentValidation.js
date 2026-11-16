@@ -8,6 +8,7 @@ const {
   PHOTO_ALLOWED_FIELDS,
   PHOTOS_MAX_COUNT,
   STATUSES,
+  STATUS_ALLOWED_FIELDS,
   TITLE_MAX_LENGTH,
   TITLE_MIN_LENGTH,
   UPDATE_ALLOWED_FIELDS,
@@ -256,8 +257,26 @@ function validateUpdateBody(body) {
   return validateSharedFields(body);
 }
 
+function validateStatusBody(body) {
+  const fieldError = assertAllowedFields(body, STATUS_ALLOWED_FIELDS);
+  if (fieldError) {
+    return { error: fieldError };
+  }
+
+  if (typeof body.status !== 'string') {
+    return { error: validationError('Status is required.') };
+  }
+
+  if (!STATUSES.includes(body.status)) {
+    return { error: validationError('Status is invalid.') };
+  }
+
+  return { value: { status: body.status } };
+}
+
 module.exports = {
   parseStatusFilter,
   validateCreateBody,
   validateUpdateBody,
+  validateStatusBody,
 };

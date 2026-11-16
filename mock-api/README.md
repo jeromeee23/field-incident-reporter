@@ -62,6 +62,7 @@ Delete success is an exception and is not wrapped in `data`:
 - `GET /incidents/:id` — incident details by UUID.
 - `POST /incidents` — create an incident. Client supplies the UUID. The API assigns `INC-0001`, `INC-0002`, and so on.
 - `PATCH /incidents/:id` — replace the editable fields (`title`, `description`, `category`, `otherCategoryDescription`, `location`, `photos`). Photos is the complete desired list.
+- `PATCH /incidents/:id/status` — transition status. Body accepts only `{ "status": "IN_PROGRESS" }`. Allowed transitions: OPEN → IN_PROGRESS or CANCELLED; IN_PROGRESS → COMPLETED or CANCELLED. COMPLETED and CANCELLED are terminal.
 - `DELETE /incidents/:id` — permanently delete an incident. Deleted incident numbers are never reused.
 
 Incident numbering is stored in `db.json` as `meta.lastIncidentNumber` and survives server restarts.

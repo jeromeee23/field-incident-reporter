@@ -1,6 +1,7 @@
 const express = require('express');
 const { db } = require('./db');
 const {
+  ALLOWED_STATUS_TRANSITIONS,
   DEFAULT_STATUS,
   ERROR_CODES,
   TERMINAL_STATUSES,
@@ -14,6 +15,7 @@ const {
 const {
   parseStatusFilter,
   validateCreateBody,
+  validateStatusBody,
   validateUpdateBody,
 } = require('./incidentValidation');
 
@@ -110,6 +112,59 @@ router.post('/', (req, res) => {
 
   persistCreatedIncident(incident, nextNumber);
   return sendSuccess(res, incident, 201);
+});
+
+router.patch('/:id/status', (req, res) => {
+  const incident = findIncidentById(req.params.id);
+  if (!incident) {
+    return sendError(
+      res,
+      404,
+      ERROR_CODES.INCIDENT_NOT_FOUND,
+      'Incident not found.',
+    );
+  }
+
+  const result = validateStatusBody(req.body);
+  if (result.error) {
+    return sendError(
+      res,
+      result.error.status,
+      result.error.code,
+      result.error.message,
+    );
+  }
+
+  const targetStatus = result.value.status;
+  const allowed = ALLOWED_STATUS_TRANSITIONS[incident.status] || [];
+  if (!allowed.includes(targetStatus)) {
+    return sendError(
+      res,
+      409,
+      ERROR_CODES.INCIDENT_CONFLICT,
+      `Cannot transition incident from ${incident.status} to ${targetStatus}.`,
+    );
+  }
+
+  const now = new Date().toISOString();
+  const patch = {
+    status: targetStatus,
+    updatedAt: now,
+  };
+  if (targetStatus === 'COMPLETED') {
+    patch.completedAt = now;
+  }
+  if (targetStatus === 'CANCELLED') {
+    patch.cancelledAt = now;
+  }
+
+  const updated = db
+    .get('incidents')
+    .find({ id: req.params.id })
+    .assign(patch)
+    .write();
+
+  return sendSuccess(res, updated);
 });
 
 router.patch('/:id', (req, res) => {
