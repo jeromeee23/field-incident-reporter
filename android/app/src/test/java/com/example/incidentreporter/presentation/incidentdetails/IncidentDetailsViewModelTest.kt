@@ -5,27 +5,29 @@ import com.example.incidentreporter.domain.usecase.CancelIncidentUseCase
 import com.example.incidentreporter.domain.usecase.DeleteIncidentUseCase
 import com.example.incidentreporter.domain.usecase.GetIncidentByIdUseCase
 import com.example.incidentreporter.domain.usecase.UpdateIncidentStatusUseCase
+import com.example.incidentreporter.presentation.incidentlist.IncidentLoadError
 import com.example.incidentreporter.testing.FakeIncidentRepository
 import com.example.incidentreporter.testing.IncidentFixtures
-import kotlinx.coroutines.Dispatchers
+import com.example.incidentreporter.testing.MainDispatcherRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
-import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.test.setMain
-import kotlinx.coroutines.launch
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
+import org.junit.Rule
 import org.junit.Test
 import kotlin.coroutines.cancellation.CancellationException
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class IncidentDetailsViewModelTest {
+
+    @get:Rule
+    val mainDispatcherRule = MainDispatcherRule()
 
     @Test
     fun loadIncident_successReplacesContent() = runDetailsTest {
@@ -40,7 +42,7 @@ class IncidentDetailsViewModelTest {
         val state = viewModel.uiState.value
         assertFalse(state.isLoading)
         assertEquals(incident, state.incident)
-        assertNull(state.errorMessage)
+        assertNull(state.loadError)
     }
 
     @Test
@@ -56,7 +58,7 @@ class IncidentDetailsViewModelTest {
         val errorState = viewModel.uiState.value
         assertFalse(errorState.isLoading)
         assertNull(errorState.incident)
-        assertEquals("Network down", errorState.errorMessage)
+        assertEquals(IncidentLoadError.Unexpected, errorState.loadError)
 
         repository.getIncidentResult = null
         repository.incidents[incident.id] = incident
@@ -66,7 +68,7 @@ class IncidentDetailsViewModelTest {
         val retryState = viewModel.uiState.value
         assertFalse(retryState.isLoading)
         assertEquals(incident, retryState.incident)
-        assertNull(retryState.errorMessage)
+        assertNull(retryState.loadError)
         assertEquals(2, repository.getIncidentCalls)
     }
 
@@ -132,7 +134,7 @@ class IncidentDetailsViewModelTest {
         val state = viewModel.uiState.value
         assertTrue(state.isLoading)
         assertNull(state.incident)
-        assertNull(state.errorMessage)
+        assertNull(state.loadError)
     }
 
     @Test
@@ -238,12 +240,5 @@ class IncidentDetailsViewModelTest {
 
     private fun runDetailsTest(
         body: suspend TestScope.() -> Unit,
-    ) = runTest {
-        Dispatchers.setMain(StandardTestDispatcher(testScheduler))
-        try {
-            body()
-        } finally {
-            Dispatchers.resetMain()
-        }
-    }
+    ) = runTest(mainDispatcherRule.dispatcher, testBody = body)
 }
