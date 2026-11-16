@@ -7,6 +7,7 @@ const {
   TERMINAL_STATUSES,
 } = require('./constants');
 const { sendDeleteSuccess, sendError, sendSuccess } = require('./http');
+const { deleteLocalPhotosForIncident } = require('./photoStorage');
 const {
   formatIncidentNumber,
   peekNextIncidentNumber,
@@ -214,7 +215,7 @@ router.patch('/:id', (req, res) => {
   return sendSuccess(res, updated);
 });
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id', async (req, res, next) => {
   const incident = findIncidentById(req.params.id);
   if (!incident) {
     return sendError(
@@ -223,6 +224,12 @@ router.delete('/:id', (req, res) => {
       ERROR_CODES.INCIDENT_NOT_FOUND,
       'Incident not found.',
     );
+  }
+
+  try {
+    await deleteLocalPhotosForIncident(incident.photos);
+  } catch (error) {
+    return next(error);
   }
 
   db.get('incidents').remove({ id: req.params.id }).write();

@@ -2,6 +2,10 @@ const express = require('express');
 const { ERROR_CODES } = require('./src/constants');
 const { sendError } = require('./src/http');
 const incidentRoutes = require('./src/incidentRoutes');
+const photoRoutes = require('./src/photoRoutes');
+const { ensureUploadsDir } = require('./src/photoStorage');
+
+ensureUploadsDir();
 
 const app = express();
 
@@ -15,6 +19,7 @@ app.get('/health', (req, res) => {
 });
 
 app.use('/incidents', incidentRoutes);
+app.use('/uploads', photoRoutes);
 
 app.use((err, req, res, next) => {
   if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {

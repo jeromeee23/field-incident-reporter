@@ -1,6 +1,7 @@
 const {
   DELETE_SUCCESS_MESSAGE,
   DELETE_SUCCESS_STATUS,
+  PHOTO_DELETE_SUCCESS_MESSAGE,
 } = require('./constants');
 
 function sendSuccess(res, data, status = 200) {
@@ -23,8 +24,17 @@ function sendDeleteSuccess(res) {
   });
 }
 
+function sendPhotoDeleteSuccess(res, photoId) {
+  res.status(200).json({
+    status: DELETE_SUCCESS_STATUS,
+    message: PHOTO_DELETE_SUCCESS_MESSAGE,
+    photoId,
+  });
+}
+
 module.exports = {
   sendSuccess,
   sendError,
   sendDeleteSuccess,
+  sendPhotoDeleteSuccess,
 };
