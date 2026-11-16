@@ -1,0 +1,72 @@
+const STATUSES = ['OPEN', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED'];
+const TERMINAL_STATUSES = ['COMPLETED', 'CANCELLED'];
+const CATEGORIES = [
+  'EQUIPMENT_DAMAGE',
+  'ROAD_HAZARD',
+  'SAFETY_ISSUE',
+  'INFRASTRUCTURE',
+  'OTHER',
+];
+
+const TITLE_MIN_LENGTH = 5;
+const TITLE_MAX_LENGTH = 100;
+const DESCRIPTION_MIN_LENGTH = 10;
+const DESCRIPTION_MAX_LENGTH = 1000;
+const LOCATION_MAX_LENGTH = 255;
+const PHOTOS_MAX_COUNT = 5;
+
+const CREATE_ALLOWED_FIELDS = [
+  'id',
+  'title',
+  'description',
+  'category',
+  'otherCategoryDescription',
+  'location',
+  'photos',
+];
+
+const UPDATE_ALLOWED_FIELDS = [
+  'title',
+  'description',
+  'category',
+  'otherCategoryDescription',
+  'location',
+  'photos',
+];
+
+const PHOTO_ALLOWED_FIELDS = ['id', 'url'];
+
+const ERROR_CODES = {
+  VALIDATION_ERROR: 'VALIDATION_ERROR',
+  INVALID_REQUEST: 'INVALID_REQUEST',
+  INCIDENT_NOT_FOUND: 'INCIDENT_NOT_FOUND',
+  INCIDENT_CONFLICT: 'INCIDENT_CONFLICT',
+  INTERNAL_SERVER_ERROR: 'INTERNAL_SERVER_ERROR',
+};
+
+const UUID_REGEX =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+const DEFAULT_STATUS = 'OPEN';
+const DELETE_SUCCESS_STATUS = 'SUCCESS';
+const DELETE_SUCCESS_MESSAGE = 'Incident successfully deleted.';
+
+module.exports = {
+  STATUSES,
+  TERMINAL_STATUSES,
+  CATEGORIES,
+  TITLE_MIN_LENGTH,
+  TITLE_MAX_LENGTH,
+  DESCRIPTION_MIN_LENGTH,
+  DESCRIPTION_MAX_LENGTH,
+  LOCATION_MAX_LENGTH,
+  PHOTOS_MAX_COUNT,
+  CREATE_ALLOWED_FIELDS,
+  UPDATE_ALLOWED_FIELDS,
+  PHOTO_ALLOWED_FIELDS,
+  ERROR_CODES,
+  UUID_REGEX,
+  DEFAULT_STATUS,
+  DELETE_SUCCESS_STATUS,
+  DELETE_SUCCESS_MESSAGE,
+};
