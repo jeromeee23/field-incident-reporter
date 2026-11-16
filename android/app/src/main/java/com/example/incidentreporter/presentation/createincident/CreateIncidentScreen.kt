@@ -60,7 +60,7 @@ import kotlinx.coroutines.launch
 import com.example.incidentreporter.R
 import com.example.incidentreporter.domain.model.IncidentCategory
 import com.example.incidentreporter.presentation.createincident.components.PhotoPickerSection
-import com.example.incidentreporter.presentation.incidentlist.components.HomeActionDialog
+import com.example.incidentreporter.presentation.incidentlist.components.ActionResultDialog
 import com.example.incidentreporter.presentation.theme.FieldIncidentReporterTheme
 import com.example.incidentreporter.presentation.theme.FormFieldBorder
 import com.example.incidentreporter.presentation.theme.FormRequiredAsterisk
@@ -301,7 +301,7 @@ internal fun CreateIncidentScreenContent(
     }
 
     uiState.submitError?.let { submitError ->
-        HomeActionDialog(
+        ActionResultDialog(
             icon = null,
             title = stringResource(R.string.create_failed_title),
             message = submitError,

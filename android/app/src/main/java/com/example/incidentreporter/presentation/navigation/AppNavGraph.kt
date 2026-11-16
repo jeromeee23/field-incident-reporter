@@ -19,6 +19,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.incidentreporter.presentation.createincident.CreateIncidentScreen
 import com.example.incidentreporter.presentation.createincident.IncidentCreatedScreen
+import com.example.incidentreporter.presentation.incidentdetails.IncidentDetailsScreen
 import com.example.incidentreporter.presentation.incidentlist.home.HomeScreen
 
 internal object AppRoutes {
@@ -26,9 +27,14 @@ internal object AppRoutes {
     const val CREATE_INCIDENT = "createincident"
     const val INCIDENT_ID_ARG = "incidentId"
     const val INCIDENT_CREATED = "incidentcreated/{$INCIDENT_ID_ARG}"
+    const val INCIDENT_DETAILS = "incidentdetails/{$INCIDENT_ID_ARG}"
 
     fun incidentCreated(incidentId: String): String {
         return "incidentcreated/${Uri.encode(incidentId)}"
+    }
+
+    fun incidentDetails(incidentId: String): String {
+        return "incidentdetails/${Uri.encode(incidentId)}"
     }
 }
 
@@ -45,6 +51,9 @@ fun AppNavGraph() {
                 HomeScreen(
                     onCreateReportClick = {
                         navController.navigate(AppRoutes.CREATE_INCIDENT)
+                    },
+                    onIncidentClick = { incidentId ->
+                        navController.navigate(AppRoutes.incidentDetails(incidentId))
                     },
                 )
             }
@@ -76,6 +85,23 @@ fun AppNavGraph() {
                     navController.popBackStack(AppRoutes.HOME, inclusive = false)
                 },
             )
+        }
+        composable(
+            route = AppRoutes.INCIDENT_DETAILS,
+            arguments = listOf(
+                navArgument(AppRoutes.INCIDENT_ID_ARG) { type = NavType.StringType },
+            ),
+        ) { backStackEntry ->
+            val incidentId = backStackEntry.arguments
+                ?.getString(AppRoutes.INCIDENT_ID_ARG)
+                .orEmpty()
+            ProvideHiltViewModelStoreOwner {
+                IncidentDetailsScreen(
+                    incidentId = incidentId,
+                    onBack = { navController.popBackStack() },
+                    onEditClick = {},
+                )
+            }
         }
     }
 }

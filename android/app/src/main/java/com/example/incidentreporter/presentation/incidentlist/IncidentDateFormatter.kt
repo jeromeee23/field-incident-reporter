@@ -14,9 +14,17 @@ private val isoPatterns = listOf(
 )
 
 internal fun formatIncidentCreatedAt(createdAt: String): String {
-    val parsed = parseIsoDate(createdAt) ?: return createdAt
+    return formatIncidentTimestamp(createdAt)
+}
+
+internal fun formatIncidentTimestamp(timestamp: String): String {
+    val parsed = parseIsoDate(timestamp) ?: return timestamp
     val formatter = SimpleDateFormat("MMM d, yyyy · hh:mm a", Locale.US)
     return formatter.format(parsed)
+}
+
+internal fun incidentTimestampMillis(timestamp: String): Long? {
+    return parseIsoDate(timestamp)?.time
 }
 
 private fun parseIsoDate(value: String): Date? {
