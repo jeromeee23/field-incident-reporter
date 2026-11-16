@@ -1,3 +1,6 @@
 {
-  "incidents": []
+  "incidents": [],
+  "meta": {
+    "lastIncidentNumber": 0
+  }
 }

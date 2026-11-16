@@ -1,6 +1,6 @@
 # Mock API
 
-Local JSON Server REST API for Field Incident Reporter.
+Local Express REST API for Field Incident Reporter, with JSON Server as the JSON persistence foundation.
 
 ## Requirements
 
@@ -19,9 +19,14 @@ npm install
 npm start
 ```
 
-The server listens on `http://localhost:3000`.
+For development with auto-reload:
 
-Generated REST endpoint:
+```bash
+npm run dev
+```
 
-- `GET/POST /incidents`
-- `GET/PUT/PATCH/DELETE /incidents/:id`
+The server listens on `http://localhost:3000`. Override the port with `PORT`.
+
+## Endpoints
+
+- `GET /health` — `{ "status": "OK", "message": "Field Incident Reporter API is running." }`
