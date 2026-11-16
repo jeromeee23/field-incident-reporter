@@ -54,6 +54,7 @@ import com.example.incidentreporter.domain.model.Incident
 import com.example.incidentreporter.domain.model.IncidentCategory
 import com.example.incidentreporter.domain.model.IncidentStatus
 import com.example.incidentreporter.domain.model.Photo
+import com.example.incidentreporter.presentation.components.BlockingLoadingOverlay
 import com.example.incidentreporter.presentation.incidentdetails.components.IncidentDetailsContent
 import com.example.incidentreporter.presentation.incidentdetails.components.IncidentPhotoViewer
 import com.example.incidentreporter.presentation.incidentdetails.components.UpdateStatusDialog
@@ -168,9 +169,6 @@ internal fun IncidentDetailsScreenContent(
                                 canUpdateStatus = uiState.canUpdateStatus,
                                 canCancel = uiState.canCancel,
                                 canRemove = uiState.canRemove,
-                                isUpdatingStatus = uiState.isUpdatingStatus,
-                                isCancelling = uiState.isCancelling,
-                                isDeleting = uiState.isDeleting,
                                 isActionInProgress = uiState.isActionInProgress,
                                 onPhotoClick = { index -> photoViewerIndex = index },
                                 onEditClick = onEditClick,
@@ -227,6 +225,11 @@ internal fun IncidentDetailsScreenContent(
                 onClose = { photoViewerIndex = null },
             )
         }
+
+        BlockingLoadingOverlay(
+            visible = uiState.isActionInProgress,
+            contentDescription = stringResource(R.string.details_action_in_progress),
+        )
     }
 }
 

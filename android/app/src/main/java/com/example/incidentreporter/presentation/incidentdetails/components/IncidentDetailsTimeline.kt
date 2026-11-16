@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.incidentreporter.R
 import com.example.incidentreporter.domain.model.Incident
+import com.example.incidentreporter.domain.model.IncidentStatus
 import com.example.incidentreporter.presentation.incidentlist.formatIncidentCreatedAt
 import com.example.incidentreporter.presentation.incidentlist.incidentTimestampMillis
 import com.example.incidentreporter.presentation.theme.HomeFabBlue
@@ -39,19 +40,19 @@ fun IncidentDetailsTimeline(
     modifier: Modifier = Modifier,
 ) {
     val entries = remember(
+        incident.status,
         incident.createdAt,
         incident.updatedAt,
         incident.completedAt,
         incident.cancelledAt,
     ) {
-        timelineEntries(incident)
+        reportTimelineEntries(incident)
     }
 
     Column(modifier = modifier.fillMaxWidth()) {
         entries.forEachIndexed { index, entry ->
             TimelineRow(
                 entry = entry,
-                isFirst = index == 0,
                 isLast = index == entries.lastIndex,
             )
         }
@@ -61,7 +62,6 @@ fun IncidentDetailsTimeline(
 @Composable
 private fun TimelineRow(
     entry: TimelineEntry,
-    isFirst: Boolean,
     isLast: Boolean,
 ) {
     Row(
@@ -79,7 +79,7 @@ private fun TimelineRow(
                 modifier = Modifier
                     .size(12.dp)
                     .then(
-                        if (isFirst) {
+                        if (entry.isCurrent) {
                             Modifier
                                 .clip(CircleShape)
                                 .background(HomeFabBlue)
@@ -118,40 +118,77 @@ private fun TimelineRow(
     }
 }
 
-private fun timelineEntries(incident: Incident): List<TimelineEntry> {
+internal enum class TimelineKind {
+    Created,
+    Updated,
+    Completed,
+    Cancelled,
+}
+
+internal data class TimelineEntry(
+    val kind: TimelineKind,
+    val labelRes: Int,
+    val timestamp: String,
+    val isCurrent: Boolean = false,
+)
+
+internal fun reportTimelineEntries(incident: Incident): List<TimelineEntry> {
+    val currentKind = currentTimelineKind(incident.status)
     return buildList {
         add(
             TimelineEntry(
+                kind = TimelineKind.Created,
                 labelRes = R.string.details_timeline_created,
                 timestamp = incident.createdAt,
             ),
         )
         add(
             TimelineEntry(
+                kind = TimelineKind.Updated,
                 labelRes = R.string.details_timeline_updated,
                 timestamp = incident.updatedAt,
             ),
         )
-        incident.completedAt?.let { completedAt ->
-            add(
-                TimelineEntry(
-                    labelRes = R.string.details_timeline_completed,
-                    timestamp = completedAt,
-                ),
-            )
+        if (incident.status != IncidentStatus.CANCELLED) {
+            incident.completedAt?.let { completedAt ->
+                add(
+                    TimelineEntry(
+                        kind = TimelineKind.Completed,
+                        labelRes = R.string.details_timeline_completed,
+                        timestamp = completedAt,
+                    ),
+                )
+            }
         }
-        incident.cancelledAt?.let { cancelledAt ->
+        if (incident.status == IncidentStatus.CANCELLED) {
             add(
                 TimelineEntry(
+                    kind = TimelineKind.Cancelled,
                     labelRes = R.string.details_timeline_cancelled,
-                    timestamp = cancelledAt,
+                    timestamp = incident.cancelledAt ?: incident.updatedAt,
                 ),
             )
+        } else {
+            incident.cancelledAt?.let { cancelledAt ->
+                add(
+                    TimelineEntry(
+                        kind = TimelineKind.Cancelled,
+                        labelRes = R.string.details_timeline_cancelled,
+                        timestamp = cancelledAt,
+                    ),
+                )
+            }
         }
-    }.sortedWith(compareBy(nullsLast()) { incidentTimestampMillis(it.timestamp) })
+    }
+        .sortedWith(compareBy(nullsLast()) { incidentTimestampMillis(it.timestamp) })
+        .map { entry -> entry.copy(isCurrent = entry.kind == currentKind) }
 }
 
-private data class TimelineEntry(
-    val labelRes: Int,
-    val timestamp: String,
-)
+internal fun currentTimelineKind(status: IncidentStatus): TimelineKind {
+    return when (status) {
+        IncidentStatus.OPEN -> TimelineKind.Created
+        IncidentStatus.IN_PROGRESS -> TimelineKind.Updated
+        IncidentStatus.COMPLETED -> TimelineKind.Completed
+        IncidentStatus.CANCELLED -> TimelineKind.Cancelled
+    }
+}

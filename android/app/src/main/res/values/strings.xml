@@ -2,7 +2,6 @@
     <string name="app_name">Field Incident Reporter</string>
     <string name="home_title">Field Incident Reporter</string>
     <string name="home_subtitle">Manage field incident reports</string>
-    <string name="home_search">Search</string>
     <string name="home_tab_active">Active</string>
     <string name="home_tab_completed">Completed</string>
     <string name="home_tab_cancelled">Cancelled</string>
@@ -46,6 +45,8 @@
     <string name="create_field_location">Location</string>
     <string name="create_field_location_placeholder">e.g. Building A – Reception</string>
     <string name="create_field_photos">Attached Photos</string>
+    <string name="create_photos_counter">%1$d/%2$d</string>
+    <string name="create_photos_remaining">%1$d remaining</string>
     <string name="create_add_photos">Add Photos</string>
     <string name="create_add_photos_subtitle">Take a photo or choose from gallery</string>
     <string name="create_photo_source_title">Add Photos</string>
@@ -88,6 +89,7 @@
     <string name="details_action_update_status">Update Status</string>
     <string name="details_action_cancel">Cancel Report</string>
     <string name="details_action_remove">Remove</string>
+    <string name="details_action_in_progress">Updating report</string>
     <string name="details_update_status_title">Update Status</string>
     <string name="details_update_status_message">Select the next status for this report.</string>
     <string name="details_update_status_confirm">Update</string>

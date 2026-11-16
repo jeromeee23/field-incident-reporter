@@ -3,6 +3,7 @@ package com.example.incidentreporter.network
 import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.example.incidentreporter.BuildConfig
+import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -35,6 +36,8 @@ internal fun buildRetrofit(okHttpClient: OkHttpClient): Retrofit {
     return Retrofit.Builder()
         .baseUrl(BuildConfig.BASE_URL)
         .client(okHttpClient)
-        .addConverterFactory(GsonConverterFactory.create())
+        .addConverterFactory(
+            GsonConverterFactory.create(GsonBuilder().serializeNulls().create()),
+        )
         .build()
 }

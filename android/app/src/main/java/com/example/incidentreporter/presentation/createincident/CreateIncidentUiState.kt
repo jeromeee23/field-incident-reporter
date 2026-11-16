@@ -26,6 +26,9 @@ data class CreateIncidentUiState(
     val isSubmitting: Boolean = false,
     val submitError: String? = null,
 ) {
+    val photoCount: Int
+        get() = selectedPhotoUris.size
+
     val canSubmit: Boolean
         get() = title.trim().isNotBlank() &&
             category != null &&

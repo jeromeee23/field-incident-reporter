@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -18,12 +19,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.example.incidentreporter.R
 import com.example.incidentreporter.domain.model.Incident
 import com.example.incidentreporter.presentation.incidentlist.formatIncidentCreatedAt
@@ -54,12 +57,23 @@ fun IncidentCard(
                 .background(HomeSkeleton),
             contentAlignment = Alignment.Center,
         ) {
-            Icon(
-                painter = painterResource(R.drawable.ic_home_image),
-                contentDescription = stringResource(R.string.home_incident_thumbnail),
-                tint = HomeTextMuted,
-                modifier = Modifier.size(28.dp),
-            )
+            val photoUrl = incident.photos.firstOrNull()?.url
+            if (photoUrl != null) {
+                AsyncImage(
+                    model = photoUrl,
+                    contentDescription = stringResource(R.string.home_incident_thumbnail),
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop,
+                    error = painterResource(R.drawable.ic_home_image),
+                )
+            } else {
+                Icon(
+                    painter = painterResource(R.drawable.ic_home_image),
+                    contentDescription = stringResource(R.string.home_incident_thumbnail),
+                    tint = HomeTextMuted,
+                    modifier = Modifier.size(28.dp),
+                )
+            }
         }
         Spacer(modifier = Modifier.width(12.dp))
         Column(modifier = Modifier.weight(1f)) {

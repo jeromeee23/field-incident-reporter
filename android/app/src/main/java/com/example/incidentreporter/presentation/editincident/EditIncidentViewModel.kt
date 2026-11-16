@@ -329,8 +329,7 @@ class EditIncidentViewModel @Inject constructor(
     }
 
     private suspend fun acceptPhotoBatch(uris: List<Uri>) {
-        val state = uiState.value
-        val currentCount = state.existingPhotos.size + state.newPhotoUris.size
+        val currentCount = uiState.value.visiblePhotoCount
         if (currentCount + uris.size > MAX_PHOTOS) {
             emitEvent(
                 EditIncidentUiEvent.ShowPhotoError(

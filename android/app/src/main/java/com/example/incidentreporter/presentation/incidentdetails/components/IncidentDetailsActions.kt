@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -35,9 +34,6 @@ fun IncidentDetailsActions(
     canUpdateStatus: Boolean,
     canCancel: Boolean,
     canRemove: Boolean,
-    isUpdatingStatus: Boolean,
-    isCancelling: Boolean,
-    isDeleting: Boolean,
     isActionInProgress: Boolean,
     onEditClick: () -> Unit,
     onUpdateStatusClick: () -> Unit,
@@ -52,7 +48,6 @@ fun IncidentDetailsActions(
                     label = stringResource(R.string.details_action_edit),
                     iconRes = R.drawable.ic_details_edit,
                     color = HomeFabBlue,
-                    isLoading = false,
                     onClick = onEditClick,
                 ),
             )
@@ -63,7 +58,6 @@ fun IncidentDetailsActions(
                     label = stringResource(R.string.details_action_update_status),
                     iconRes = R.drawable.ic_details_refresh,
                     color = HomeFabBlue,
-                    isLoading = isUpdatingStatus,
                     onClick = onUpdateStatusClick,
                 ),
             )
@@ -74,7 +68,6 @@ fun IncidentDetailsActions(
                     label = stringResource(R.string.details_action_cancel),
                     iconRes = R.drawable.ic_details_cancel,
                     color = HomeSwipeRemove,
-                    isLoading = isCancelling,
                     onClick = onCancelClick,
                 ),
             )
@@ -85,7 +78,6 @@ fun IncidentDetailsActions(
                     label = stringResource(R.string.details_action_remove),
                     iconRes = R.drawable.ic_home_delete,
                     color = HomeSwipeRemove,
-                    isLoading = isDeleting,
                     onClick = onRemoveClick,
                 ),
             )
@@ -135,19 +127,11 @@ private fun DetailsActionButton(
         ),
         contentPadding = PaddingValues(horizontal = 8.dp, vertical = 12.dp),
     ) {
-        if (action.isLoading) {
-            CircularProgressIndicator(
-                modifier = Modifier.size(16.dp),
-                color = action.color,
-                strokeWidth = 2.dp,
-            )
-        } else {
-            Icon(
-                painter = painterResource(action.iconRes),
-                contentDescription = null,
-                modifier = Modifier.size(16.dp),
-            )
-        }
+        Icon(
+            painter = painterResource(action.iconRes),
+            contentDescription = null,
+            modifier = Modifier.size(16.dp),
+        )
         Spacer(modifier = Modifier.width(8.dp))
         Text(
             text = action.label,
@@ -163,6 +147,5 @@ private data class DetailsAction(
     val label: String,
     val iconRes: Int,
     val color: Color,
-    val isLoading: Boolean,
     val onClick: () -> Unit,
 )

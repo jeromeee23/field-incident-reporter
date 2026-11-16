@@ -19,7 +19,6 @@ import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -278,13 +277,6 @@ private fun HomeHeader() {
                 text = stringResource(R.string.home_subtitle),
                 color = Color.White.copy(alpha = 0.75f),
                 fontSize = 12.sp,
-            )
-        }
-        IconButton(onClick = {}) {
-            Icon(
-                painter = painterResource(R.drawable.ic_home_search),
-                contentDescription = stringResource(R.string.home_search),
-                tint = Color.White,
             )
         }
     }

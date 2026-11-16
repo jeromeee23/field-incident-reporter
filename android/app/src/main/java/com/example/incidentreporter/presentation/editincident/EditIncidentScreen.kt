@@ -49,8 +49,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -60,7 +58,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.incidentreporter.R
 import com.example.incidentreporter.domain.model.IncidentCategory
+import com.example.incidentreporter.presentation.components.BlockingLoadingOverlay
 import com.example.incidentreporter.presentation.createincident.MAX_DESCRIPTION_LENGTH
+import com.example.incidentreporter.presentation.createincident.MAX_PHOTOS
 import com.example.incidentreporter.presentation.editincident.components.EditPhotoPickerSection
 import com.example.incidentreporter.presentation.incidentlist.IncidentLoadError
 import com.example.incidentreporter.presentation.incidentlist.components.ActionResultDialog
@@ -150,18 +150,19 @@ internal fun EditIncidentScreenContent(
 ) {
     val loadError = uiState.loadError
 
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        containerColor = HomeBackground,
-        contentWindowInsets = WindowInsets.navigationBars,
-        snackbarHost = { SnackbarHost(snackbarHostState) },
-        topBar = {
-            EditIncidentTopBar(
-                onBack = onBack,
-                enabled = !uiState.isSubmitting && !uiState.isProcessingPhotos,
-            )
-        },
-    ) { innerPadding ->
+    Box(modifier = Modifier.fillMaxSize()) {
+        Scaffold(
+            modifier = Modifier.fillMaxSize(),
+            containerColor = HomeBackground,
+            contentWindowInsets = WindowInsets.navigationBars,
+            snackbarHost = { SnackbarHost(snackbarHostState) },
+            topBar = {
+                EditIncidentTopBar(
+                    onBack = onBack,
+                    enabled = !uiState.isSubmitting && !uiState.isProcessingPhotos,
+                )
+            },
+        ) { innerPadding ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -197,6 +198,12 @@ internal fun EditIncidentScreenContent(
                 }
             }
         }
+        }
+
+        BlockingLoadingOverlay(
+            visible = uiState.isSubmitting,
+            contentDescription = stringResource(R.string.edit_submitting),
+        )
     }
 
     uiState.submitError?.let { submitError ->
@@ -331,12 +338,41 @@ private fun EditIncidentForm(
             )
 
             Spacer(modifier = Modifier.height(20.dp))
-            Text(
-                text = stringResource(R.string.details_photos_title, uiState.visiblePhotoCount),
-                color = HomeTextPrimary,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Bold,
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = stringResource(R.string.create_field_photos),
+                    modifier = Modifier.weight(1f),
+                    color = HomeTextPrimary,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                )
+                Text(
+                    text = stringResource(
+                        R.string.create_photos_counter,
+                        uiState.visiblePhotoCount,
+                        MAX_PHOTOS,
+                    ),
+                    color = HomeTextMuted,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Medium,
+                    textAlign = TextAlign.End,
+                )
+            }
+            val remainingPhotoSlots = (MAX_PHOTOS - uiState.visiblePhotoCount).coerceAtLeast(0)
+            if (remainingPhotoSlots > 0) {
+                Text(
+                    text = stringResource(
+                        R.string.create_photos_remaining,
+                        remainingPhotoSlots,
+                    ),
+                    modifier = Modifier.padding(top = 4.dp),
+                    color = HomeTextMuted,
+                    fontSize = 12.sp,
+                )
+            }
             Spacer(modifier = Modifier.height(8.dp))
             EditPhotoPickerSection(
                 photoItems = uiState.photoItems,
@@ -359,31 +395,16 @@ private fun EditIncidentForm(
             shape = RoundedCornerShape(10.dp),
             colors = ButtonDefaults.buttonColors(
                 containerColor = HomeFabBlue,
-                disabledContainerColor = if (uiState.isSubmitting) {
-                    HomeFabBlue
-                } else {
-                    FormSubmitDisabled
-                },
+                disabledContainerColor = FormSubmitDisabled,
                 contentColor = Color.White,
                 disabledContentColor = Color.White,
             ),
         ) {
-            if (uiState.isSubmitting) {
-                val submittingLabel = stringResource(R.string.edit_submitting)
-                CircularProgressIndicator(
-                    modifier = Modifier
-                        .size(22.dp)
-                        .semantics { contentDescription = submittingLabel },
-                    color = Color.White,
-                    strokeWidth = 2.dp,
-                )
-            } else {
-                Text(
-                    text = stringResource(R.string.edit_save),
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.SemiBold,
-                )
-            }
+            Text(
+                text = stringResource(R.string.edit_save),
+                fontSize = 16.sp,
+                fontWeight = FontWeight.SemiBold,
+            )
         }
 
         Button(

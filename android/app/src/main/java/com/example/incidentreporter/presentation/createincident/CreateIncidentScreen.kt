@@ -2,6 +2,7 @@ package com.example.incidentreporter.presentation.createincident
 
 import android.net.Uri
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,7 +13,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
@@ -20,7 +20,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -45,8 +44,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -59,6 +56,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.launch
 import com.example.incidentreporter.R
 import com.example.incidentreporter.domain.model.IncidentCategory
+import com.example.incidentreporter.presentation.components.BlockingLoadingOverlay
 import com.example.incidentreporter.presentation.createincident.components.PhotoPickerSection
 import com.example.incidentreporter.presentation.incidentlist.components.ActionResultDialog
 import com.example.incidentreporter.presentation.theme.FieldIncidentReporterTheme
@@ -133,13 +131,14 @@ internal fun CreateIncidentScreenContent(
     onSubmit: () -> Unit,
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
 ) {
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        containerColor = HomeBackground,
-        contentWindowInsets = WindowInsets.navigationBars,
-        snackbarHost = { SnackbarHost(snackbarHostState) },
-        topBar = { CreateReportTopBar(onBack = onBack) },
-    ) { innerPadding ->
+    Box(modifier = Modifier.fillMaxSize()) {
+        Scaffold(
+            modifier = Modifier.fillMaxSize(),
+            containerColor = HomeBackground,
+            contentWindowInsets = WindowInsets.navigationBars,
+            snackbarHost = { SnackbarHost(snackbarHostState) },
+            topBar = { CreateReportTopBar(onBack = onBack) },
+        ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -244,12 +243,41 @@ internal fun CreateIncidentScreenContent(
                 )
 
                 Spacer(modifier = Modifier.height(20.dp))
-                Text(
-                    text = stringResource(R.string.create_field_photos),
-                    color = HomeTextPrimary,
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold,
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        text = stringResource(R.string.create_field_photos),
+                        modifier = Modifier.weight(1f),
+                        color = HomeTextPrimary,
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold,
+                    )
+                    Text(
+                        text = stringResource(
+                            R.string.create_photos_counter,
+                            uiState.photoCount,
+                            MAX_PHOTOS,
+                        ),
+                        color = HomeTextMuted,
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Medium,
+                        textAlign = TextAlign.End,
+                    )
+                }
+                val remainingPhotoSlots = (MAX_PHOTOS - uiState.photoCount).coerceAtLeast(0)
+                if (remainingPhotoSlots > 0) {
+                    Text(
+                        text = stringResource(
+                            R.string.create_photos_remaining,
+                            remainingPhotoSlots,
+                        ),
+                        modifier = Modifier.padding(top = 4.dp),
+                        color = HomeTextMuted,
+                        fontSize = 12.sp,
+                    )
+                }
                 Spacer(modifier = Modifier.height(8.dp))
                 PhotoPickerSection(
                     photoUris = uiState.selectedPhotoUris,
@@ -271,33 +299,24 @@ internal fun CreateIncidentScreenContent(
                 shape = RoundedCornerShape(10.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = HomeFabBlue,
-                    disabledContainerColor = if (uiState.isSubmitting) {
-                        HomeFabBlue
-                    } else {
-                        FormSubmitDisabled
-                    },
+                    disabledContainerColor = FormSubmitDisabled,
                     contentColor = Color.White,
                     disabledContentColor = Color.White,
                 ),
             ) {
-                if (uiState.isSubmitting) {
-                    val submittingLabel = stringResource(R.string.create_submitting)
-                    CircularProgressIndicator(
-                        modifier = Modifier
-                            .size(22.dp)
-                            .semantics { contentDescription = submittingLabel },
-                        color = Color.White,
-                        strokeWidth = 2.dp,
-                    )
-                } else {
-                    Text(
-                        text = stringResource(R.string.create_submit),
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.SemiBold,
-                    )
-                }
+                Text(
+                    text = stringResource(R.string.create_submit),
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.SemiBold,
+                )
             }
         }
+        }
+
+        BlockingLoadingOverlay(
+            visible = uiState.isSubmitting,
+            contentDescription = stringResource(R.string.create_submitting),
+        )
     }
 
     uiState.submitError?.let { submitError ->
