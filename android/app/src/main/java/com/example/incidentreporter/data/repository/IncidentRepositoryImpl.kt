@@ -21,6 +21,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.coroutines.cancellation.CancellationException
 
 private const val MAX_PHOTOS = 5
 private const val MAX_PHOTO_SIZE_BYTES = 5L * 1024 * 1024
@@ -55,7 +56,7 @@ class IncidentRepositoryImpl @Inject constructor(
         request: CreateIncidentRequest,
     ): Result<Incident> {
         return safeApiCall { incidentApiService.createIncident(request.toDto()) }
-            .map { it.toIncident() }
+            .mapSafely { it.toIncident() }
     }
 
     override suspend fun updateIncident(
@@ -95,7 +96,7 @@ class IncidentRepositoryImpl @Inject constructor(
 
         return safeApiCall {
             photoApiService.uploadPhotos(incidentIdBody, photoParts)
-        }.map { dtos -> dtos.map { it.toPhoto() } }
+        }.mapSafely { dtos -> dtos.map { it.toPhoto() } }
     }
 
     override suspend fun deletePhoto(
@@ -146,4 +147,19 @@ class IncidentRepositoryImpl @Inject constructor(
             else -> error("Unsupported photo format: $extension")
         }
     }
+}
+
+private inline fun <T, R> Result<T>.mapSafely(transform: (T) -> R): Result<R> {
+    return fold(
+        onSuccess = { value ->
+            try {
+                Result.success(transform(value))
+            } catch (error: CancellationException) {
+                throw error
+            } catch (error: Exception) {
+                Result.failure(error)
+            }
+        },
+        onFailure = { Result.failure(it) },
+    )
 }

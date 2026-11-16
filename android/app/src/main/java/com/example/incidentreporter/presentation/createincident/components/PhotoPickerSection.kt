@@ -28,6 +28,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
@@ -76,6 +77,7 @@ fun PhotoPickerSection(
     val context = LocalContext.current
     var showSourceDialog by remember { mutableStateOf(false) }
     var pendingCameraUri by remember { mutableStateOf<Uri?>(null) }
+    var pendingCameraFile by remember { mutableStateOf<File?>(null) }
 
     val multipleGalleryLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickMultipleVisualMedia(MAX_PHOTOS),
@@ -95,9 +97,19 @@ fun PhotoPickerSection(
         contract = ActivityResultContracts.TakePicture(),
     ) { success ->
         val capturedUri = pendingCameraUri
+        val capturedFile = pendingCameraFile
         pendingCameraUri = null
+        pendingCameraFile = null
         if (success && capturedUri != null) {
             onPhotosPicked(listOf(capturedUri))
+        } else {
+            capturedFile?.delete()
+        }
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            pendingCameraFile?.delete()
         }
     }
 
@@ -106,10 +118,14 @@ fun PhotoPickerSection(
 
     fun launchGallery() {
         val request = PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-        if (remainingSlots <= 1) {
-            singleGalleryLauncher.launch(request)
-        } else {
-            multipleGalleryLauncher.launch(request)
+        try {
+            if (remainingSlots <= 1) {
+                singleGalleryLauncher.launch(request)
+            } else {
+                multipleGalleryLauncher.launch(request)
+            }
+        } catch (_: ActivityNotFoundException) {
+            onPickerError(context.getString(R.string.create_gallery_unavailable))
         }
     }
 
@@ -122,10 +138,12 @@ fun PhotoPickerSection(
             photoFile,
         )
         pendingCameraUri = uri
+        pendingCameraFile = photoFile
         try {
             cameraLauncher.launch(uri)
         } catch (_: ActivityNotFoundException) {
             pendingCameraUri = null
+            pendingCameraFile = null
             photoFile.delete()
             onPickerError(context.getString(R.string.create_camera_unavailable))
         }

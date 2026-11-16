@@ -20,26 +20,30 @@ class IncidentPhotoManager @Inject constructor(
             val copied = mutableListOf<CopiedPhoto>()
             try {
                 uris.forEach { uri ->
-                    val mimeType = context.contentResolver.getType(uri)
-                    val extension = extensionFor(mimeType, uri)
-                    validateFormat(mimeType, extension).getOrElse { error ->
-                        deleteCopied(copied)
-                        return@withContext Result.failure(error)
+                    try {
+                        val mimeType = context.contentResolver.getType(uri)
+                        val extension = extensionFor(mimeType, uri)
+                        validateFormat(mimeType, extension).getOrElse { error ->
+                            deleteCopied(copied)
+                            return@withContext Result.failure(error)
+                        }
+                        val resolvedExtension = checkNotNull(extension) {
+                            "Only JPEG, PNG, and WebP photos are supported. The selected photos were not added."
+                        }
+                        val file = copyUriToTempFile(uri, resolvedExtension)
+                        val sizeError = validateFileSize(file)
+                        if (sizeError != null) {
+                            file.delete()
+                            deleteCopied(copied)
+                            return@withContext Result.failure(sizeError)
+                        }
+                        copied += CopiedPhoto(
+                            displayUri = uriForFile(file),
+                            file = file,
+                        )
+                    } finally {
+                        deleteCameraCacheSource(uri)
                     }
-                    val resolvedExtension = checkNotNull(extension) {
-                        "Only JPEG, PNG, and WebP photos are supported. The selected photos were not added."
-                    }
-                    val file = copyUriToTempFile(uri, resolvedExtension)
-                    val sizeError = validateFileSize(file)
-                    if (sizeError != null) {
-                        file.delete()
-                        deleteCopied(copied)
-                        return@withContext Result.failure(sizeError)
-                    }
-                    copied += CopiedPhoto(
-                        displayUri = uriForFile(file),
-                        file = file,
-                    )
                 }
                 copied.forEach { item -> photoFiles[item.displayUri] = item.file }
                 Result.success(copied.map { it.displayUri })
@@ -75,12 +79,17 @@ class IncidentPhotoManager @Inject constructor(
     private fun copyUriToTempFile(uri: Uri, extension: String): File {
         val directory = File(context.cacheDir, PHOTO_CACHE_DIR).apply { mkdirs() }
         val destination = File.createTempFile(PHOTO_FILE_PREFIX, ".$extension", directory)
-        val input = context.contentResolver.openInputStream(uri)
-            ?: error("Unable to read the selected photos. The selected photos were not added.")
-        input.use { stream ->
-            destination.outputStream().use { output -> stream.copyTo(output) }
+        try {
+            val input = context.contentResolver.openInputStream(uri)
+                ?: error("Unable to read the selected photos. The selected photos were not added.")
+            input.use { stream ->
+                destination.outputStream().use { output -> stream.copyTo(output) }
+            }
+            return destination
+        } catch (error: Exception) {
+            destination.delete()
+            throw error
         }
-        return destination
     }
 
     private fun validateFormat(mimeType: String?, extension: String?): Result<Unit> {
@@ -129,6 +138,23 @@ class IncidentPhotoManager @Inject constructor(
         copied.forEach { it.file.delete() }
     }
 
+    private fun deleteCameraCacheSource(uri: Uri) {
+        val fileName = uri.lastPathSegment ?: return
+        val cameraDir = File(context.cacheDir, CAMERA_CACHE_DIR)
+        val source = File(cameraDir, fileName)
+        try {
+            val cameraDirCanonical = cameraDir.canonicalFile
+            val sourceCanonical = source.canonicalFile
+            if (sourceCanonical.exists() && sourceCanonical.parentFile == cameraDirCanonical) {
+                sourceCanonical.delete()
+            }
+        } catch (error: CancellationException) {
+            throw error
+        } catch (_: Exception) {
+            // Best-effort cleanup of camera cache files must not fail photo selection.
+        }
+    }
+
     private fun unsupportedFormatError(): IllegalArgumentException {
         return IllegalArgumentException(
             "Only JPEG, PNG, and WebP photos are supported. The selected photos were not added.",
@@ -143,6 +169,7 @@ class IncidentPhotoManager @Inject constructor(
     private companion object {
         const val PHOTO_CACHE_DIR = "incident_photos"
         const val PHOTO_FILE_PREFIX = "incident_photo_"
+        const val CAMERA_CACHE_DIR = "camera"
         const val FILE_PROVIDER_SUFFIX = "provider"
         val SUPPORTED_MIME_TYPES = setOf("image/jpeg", "image/jpg", "image/png", "image/webp")
         val SUPPORTED_EXTENSIONS = setOf("jpg", "jpeg", "png", "webp")

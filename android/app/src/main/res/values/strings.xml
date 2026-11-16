@@ -62,6 +62,7 @@
     <string name="create_category_infrastructure">Infrastructure</string>
     <string name="create_category_other">Other</string>
     <string name="create_camera_unavailable">No camera app is available on this device.</string>
+    <string name="create_gallery_unavailable">No photo picker is available on this device.</string>
     <string name="create_success_toolbar">Incident Report</string>
     <string name="create_success_heading">Report Submitted!</string>
     <string name="create_success_message">Your incident report has been successfully submitted. Thank you for helping keep our community safe and informed.</string>

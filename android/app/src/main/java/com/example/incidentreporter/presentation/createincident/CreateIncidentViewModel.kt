@@ -147,6 +147,13 @@ class CreateIncidentViewModel @Inject constructor(
                     }
             } catch (error: CancellationException) {
                 throw error
+            } catch (error: Exception) {
+                updateState {
+                    it.copy(
+                        isSubmitting = false,
+                        submitError = error.toUserMessage(),
+                    )
+                }
             }
         }
     }
