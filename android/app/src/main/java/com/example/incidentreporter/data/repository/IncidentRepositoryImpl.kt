@@ -96,7 +96,7 @@ class IncidentRepositoryImpl @Inject constructor(
 
         return safeApiCall {
             photoApiService.uploadPhotos(incidentIdBody, photoParts)
-        }.mapSafely { dtos -> dtos.map { it.toPhoto() } }
+        }.mapSafely { data -> data.photos.map { it.toPhoto() } }
     }
 
     override suspend fun deletePhoto(

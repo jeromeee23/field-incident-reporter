@@ -2,7 +2,7 @@ package com.example.incidentreporter.data.remote.api
 
 import com.example.incidentreporter.data.remote.dto.response.ApiResponse
 import com.example.incidentreporter.data.remote.dto.response.DeletePhotoResponse
-import com.example.incidentreporter.data.remote.dto.response.IncidentPhotoDto
+import com.example.incidentreporter.data.remote.dto.response.UploadPhotosDataDto
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
@@ -19,7 +19,7 @@ interface PhotoApiService {
     suspend fun uploadPhotos(
         @Part("incidentId") incidentId: RequestBody,
         @Part photos: List<MultipartBody.Part>,
-    ): Response<ApiResponse<List<IncidentPhotoDto>>>
+    ): Response<ApiResponse<UploadPhotosDataDto>>
 
     @DELETE("uploads/photos/{photoId}")
     suspend fun deletePhoto(
