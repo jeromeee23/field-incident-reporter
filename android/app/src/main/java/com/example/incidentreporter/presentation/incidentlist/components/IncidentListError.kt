@@ -26,6 +26,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.incidentreporter.R
+import com.example.incidentreporter.presentation.incidentlist.IncidentLoadError
 import com.example.incidentreporter.presentation.theme.HomeFabBlue
 import com.example.incidentreporter.presentation.theme.HomeSkeleton
 import com.example.incidentreporter.presentation.theme.HomeTextMuted
@@ -34,9 +35,31 @@ import com.example.incidentreporter.presentation.theme.HomeTextSecondary
 
 @Composable
 fun IncidentListError(
+    loadError: IncidentLoadError,
     onRetry: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val illustrationRes = when (loadError) {
+        IncidentLoadError.Network -> R.drawable.ic_home_wifi_off
+        is IncidentLoadError.Transport,
+        is IncidentLoadError.Api,
+        IncidentLoadError.Unexpected,
+        -> R.drawable.ic_home_warning
+    }
+    val message = when (loadError) {
+        IncidentLoadError.Network -> stringResource(R.string.home_error_message)
+        is IncidentLoadError.Transport -> if (loadError.timedOut) {
+            stringResource(R.string.details_error_timeout_message)
+        } else {
+            stringResource(R.string.details_error_transport_message)
+        }
+        is IncidentLoadError.Api -> loadError.message.ifBlank {
+            stringResource(R.string.details_error_api_fallback)
+        }
+        IncidentLoadError.Unexpected -> {
+            stringResource(R.string.details_error_unexpected_message)
+        }
+    }
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -52,7 +75,7 @@ fun IncidentListError(
             contentAlignment = Alignment.Center,
         ) {
             Icon(
-                painter = painterResource(R.drawable.ic_home_wifi_off),
+                painter = painterResource(illustrationRes),
                 contentDescription = null,
                 tint = HomeTextMuted,
                 modifier = Modifier.size(32.dp),
@@ -68,7 +91,7 @@ fun IncidentListError(
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            text = stringResource(R.string.home_error_message),
+            text = message,
             color = HomeTextSecondary,
             fontSize = 14.sp,
             textAlign = TextAlign.Center,

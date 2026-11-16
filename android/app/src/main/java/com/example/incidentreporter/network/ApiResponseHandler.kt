@@ -3,6 +3,7 @@ package com.example.incidentreporter.network
 import com.example.incidentreporter.data.remote.dto.response.ApiErrorResponse
 import com.example.incidentreporter.data.remote.dto.response.ApiResponse
 import com.google.gson.Gson
+import com.google.gson.JsonParseException
 import com.google.gson.JsonSyntaxException
 import retrofit2.Response
 import java.io.IOException
@@ -55,12 +56,15 @@ suspend fun <T> safeDirectCall(
 
 private fun <T> toApiException(response: Response<T>): ApiException {
     val errorBody = response.errorBody()?.string()
-    val apiErrorResponse = if (errorBody.isNullOrBlank()) {
+    val apiError = if (errorBody.isNullOrBlank()) {
         null
     } else {
-        errorBodyGson.fromJson(errorBody, ApiErrorResponse::class.java)
+        try {
+            errorBodyGson.fromJson(errorBody, ApiErrorResponse::class.java)?.error
+        } catch (_: JsonParseException) {
+            null
+        }
     }
-    val apiError = apiErrorResponse?.error
     return ApiException(
         httpStatusCode = response.code(),
         errorCode = apiError?.code ?: UNKNOWN_ERROR_CODE,

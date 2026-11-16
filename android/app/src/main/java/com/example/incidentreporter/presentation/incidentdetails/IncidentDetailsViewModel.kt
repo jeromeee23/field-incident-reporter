@@ -9,7 +9,9 @@ import com.example.incidentreporter.domain.usecase.DeleteIncidentUseCase
 import com.example.incidentreporter.domain.usecase.GetIncidentByIdUseCase
 import com.example.incidentreporter.domain.usecase.UpdateIncidentStatusUseCase
 import com.example.incidentreporter.presentation.base.BaseViewModel
+import com.example.incidentreporter.presentation.incidentlist.IncidentLoadError
 import com.example.incidentreporter.presentation.incidentlist.toIncidentErrorMessage
+import com.example.incidentreporter.presentation.incidentlist.toIncidentLoadError
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -34,7 +36,7 @@ class IncidentDetailsViewModel @Inject constructor(
                 it.copy(
                     isLoading = false,
                     incident = null,
-                    errorMessage = "An unexpected error occurred.",
+                    loadError = IncidentLoadError.Unexpected,
                 )
             }
             return
@@ -48,7 +50,7 @@ class IncidentDetailsViewModel @Inject constructor(
             updateState {
                 it.copy(
                     isLoading = true,
-                    errorMessage = null,
+                    loadError = null,
                 )
             }
             try {
@@ -58,7 +60,7 @@ class IncidentDetailsViewModel @Inject constructor(
                             it.copy(
                                 isLoading = false,
                                 incident = incident,
-                                errorMessage = null,
+                                loadError = null,
                             )
                         }
                     }
@@ -67,7 +69,7 @@ class IncidentDetailsViewModel @Inject constructor(
                         updateState {
                             it.copy(
                                 isLoading = false,
-                                errorMessage = error.toIncidentErrorMessage(),
+                                loadError = error.toIncidentLoadError(),
                             )
                         }
                     }

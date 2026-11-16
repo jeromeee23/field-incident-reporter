@@ -7,6 +7,7 @@ import com.example.incidentreporter.domain.usecase.DeleteIncidentUseCase
 import com.example.incidentreporter.domain.usecase.GetIncidentsUseCase
 import com.example.incidentreporter.presentation.base.BaseViewModel
 import com.example.incidentreporter.presentation.incidentlist.toIncidentErrorMessage
+import com.example.incidentreporter.presentation.incidentlist.toIncidentLoadError
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -30,7 +31,7 @@ class ActiveIncidentViewModel @Inject constructor(
                 it.copy(
                     isLoading = true,
                     incidents = emptyList(),
-                    errorMessage = null,
+                    loadError = null,
                 )
             }
             try {
@@ -40,7 +41,7 @@ class ActiveIncidentViewModel @Inject constructor(
                             it.copy(
                                 isLoading = false,
                                 incidents = incidents,
-                                errorMessage = null,
+                                loadError = null,
                                 tabCount = incidents.size,
                             )
                         }
@@ -51,7 +52,7 @@ class ActiveIncidentViewModel @Inject constructor(
                             it.copy(
                                 isLoading = false,
                                 incidents = emptyList(),
-                                errorMessage = error.toIncidentErrorMessage(),
+                                loadError = error.toIncidentLoadError(),
                             )
                         }
                     }

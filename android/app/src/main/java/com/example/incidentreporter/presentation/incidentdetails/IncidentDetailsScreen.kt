@@ -54,6 +54,7 @@ import com.example.incidentreporter.domain.model.Photo
 import com.example.incidentreporter.presentation.incidentdetails.components.IncidentDetailsContent
 import com.example.incidentreporter.presentation.incidentdetails.components.IncidentPhotoViewer
 import com.example.incidentreporter.presentation.incidentdetails.components.UpdateStatusDialog
+import com.example.incidentreporter.presentation.incidentlist.IncidentLoadError
 import com.example.incidentreporter.presentation.incidentlist.components.CancelReportDialog
 import com.example.incidentreporter.presentation.incidentlist.components.RemoveReportDialog
 import com.example.incidentreporter.presentation.theme.FieldIncidentReporterTheme
@@ -120,6 +121,7 @@ internal fun IncidentDetailsScreenContent(
     var showRemoveDialog by remember { mutableStateOf(false) }
     var photoViewerIndex by remember { mutableStateOf<Int?>(null) }
     val incident = uiState.incident
+    val loadError = uiState.loadError
 
     Box(modifier = Modifier.fillMaxSize()) {
         Scaffold(
@@ -139,8 +141,9 @@ internal fun IncidentDetailsScreenContent(
                         IncidentDetailsLoading(modifier = Modifier.fillMaxSize())
                     }
 
-                    uiState.errorMessage != null && incident == null -> {
+                    loadError != null && incident == null -> {
                         IncidentDetailsError(
+                            loadError = loadError,
                             onRetry = onRetry,
                             modifier = Modifier.fillMaxSize(),
                         )
@@ -263,9 +266,31 @@ private fun IncidentDetailsLoading(
 
 @Composable
 private fun IncidentDetailsError(
+    loadError: IncidentLoadError,
     onRetry: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val illustrationRes = when (loadError) {
+        IncidentLoadError.Network -> R.drawable.ic_home_wifi_off
+        is IncidentLoadError.Transport,
+        is IncidentLoadError.Api,
+        IncidentLoadError.Unexpected,
+        -> R.drawable.ic_home_warning
+    }
+    val message = when (loadError) {
+        IncidentLoadError.Network -> stringResource(R.string.details_error_message)
+        is IncidentLoadError.Transport -> if (loadError.timedOut) {
+            stringResource(R.string.details_error_timeout_message)
+        } else {
+            stringResource(R.string.details_error_transport_message)
+        }
+        is IncidentLoadError.Api -> loadError.message.ifBlank {
+            stringResource(R.string.details_error_api_fallback)
+        }
+        IncidentLoadError.Unexpected -> {
+            stringResource(R.string.details_error_unexpected_message)
+        }
+    }
     Column(
         modifier = modifier.padding(horizontal = 32.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -279,7 +304,7 @@ private fun IncidentDetailsError(
             contentAlignment = Alignment.Center,
         ) {
             Icon(
-                painter = painterResource(R.drawable.ic_home_wifi_off),
+                painter = painterResource(illustrationRes),
                 contentDescription = null,
                 tint = HomeTextMuted,
                 modifier = Modifier.size(32.dp),
@@ -295,7 +320,7 @@ private fun IncidentDetailsError(
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            text = stringResource(R.string.details_error_message),
+            text = message,
             color = HomeTextSecondary,
             fontSize = 14.sp,
             textAlign = TextAlign.Center,
@@ -356,7 +381,7 @@ private fun IncidentDetailsErrorPreview() {
         IncidentDetailsScreenContent(
             uiState = IncidentDetailsUiState(
                 isLoading = false,
-                errorMessage = "Unable to load incident",
+                loadError = IncidentLoadError.Network,
             ),
             onBack = {},
             onRetry = {},

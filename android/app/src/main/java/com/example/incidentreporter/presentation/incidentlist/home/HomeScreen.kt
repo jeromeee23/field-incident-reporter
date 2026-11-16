@@ -170,15 +170,15 @@ internal fun HomeScreenContent(
 ) {
     val showFab = when (selectedTab) {
         HomeTab.ACTIVE -> !activeState.isLoading &&
-            activeState.errorMessage == null &&
+            activeState.loadError == null &&
             activeState.incidents.isNotEmpty()
 
         HomeTab.COMPLETED -> !completedState.isLoading &&
-            completedState.errorMessage == null &&
+            completedState.loadError == null &&
             completedState.incidents.isNotEmpty()
 
         HomeTab.CANCELLED -> !cancelledState.isLoading &&
-            cancelledState.errorMessage == null &&
+            cancelledState.loadError == null &&
             cancelledState.incidents.isNotEmpty()
     }
 

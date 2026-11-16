@@ -94,6 +94,10 @@
     <string name="details_update_status_dismiss">Close</string>
     <string name="details_error_title">Unable to load incident</string>
     <string name="details_error_message">Please check your internet connection and try again.</string>
+    <string name="details_error_timeout_message">The request timed out. Please try again.</string>
+    <string name="details_error_transport_message">Unable to complete the request. Please try again.</string>
+    <string name="details_error_api_fallback">Unable to load this incident. Please try again.</string>
+    <string name="details_error_unexpected_message">An unexpected error occurred.</string>
     <string name="details_retry">Retry</string>
     <string name="details_status_updated">Status updated.</string>
     <string name="details_report_cancelled">Report cancelled.</string>

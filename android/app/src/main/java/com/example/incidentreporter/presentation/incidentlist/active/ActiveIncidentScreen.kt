@@ -26,7 +26,7 @@ fun ActiveIncidentScreen(
     IncidentListContent(
         isLoading = uiState.isLoading,
         incidents = uiState.incidents,
-        errorMessage = uiState.errorMessage,
+        loadError = uiState.loadError,
         performingActionIncidentIds = uiState.performingActionIncidentIds,
         emptyTitle = stringResource(R.string.home_empty_active_title),
         emptyMessage = stringResource(R.string.home_empty_active_message),

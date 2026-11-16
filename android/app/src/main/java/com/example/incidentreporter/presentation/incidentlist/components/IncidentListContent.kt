@@ -13,12 +13,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.incidentreporter.domain.model.Incident
+import com.example.incidentreporter.presentation.incidentlist.IncidentLoadError
 
 @Composable
 fun IncidentListContent(
     isLoading: Boolean,
     incidents: List<Incident>,
-    errorMessage: String?,
+    loadError: IncidentLoadError?,
     performingActionIncidentIds: Set<String>,
     emptyTitle: String,
     emptyMessage: String,
@@ -40,8 +41,9 @@ fun IncidentListContent(
             IncidentListLoading(modifier = modifier)
         }
 
-        errorMessage != null -> {
+        loadError != null -> {
             IncidentListError(
+                loadError = loadError,
                 onRetry = onRetry,
                 modifier = modifier,
             )

@@ -2,11 +2,12 @@ package com.example.incidentreporter.presentation.incidentdetails
 
 import com.example.incidentreporter.domain.model.Incident
 import com.example.incidentreporter.domain.model.IncidentStatus
+import com.example.incidentreporter.presentation.incidentlist.IncidentLoadError
 
 data class IncidentDetailsUiState(
     val isLoading: Boolean = true,
     val incident: Incident? = null,
-    val errorMessage: String? = null,
+    val loadError: IncidentLoadError? = null,
     val isUpdatingStatus: Boolean = false,
     val isCancelling: Boolean = false,
     val isDeleting: Boolean = false,

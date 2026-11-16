@@ -49,7 +49,7 @@ class IncidentRepositoryImpl @Inject constructor(
         id: String,
     ): Result<Incident> {
         return safeApiCall { incidentApiService.getIncident(id) }
-            .map { it.toIncident() }
+            .mapSafely { it.toIncident() }
     }
 
     override suspend fun createIncident(

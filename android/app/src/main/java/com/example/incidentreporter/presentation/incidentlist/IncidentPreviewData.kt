@@ -70,7 +70,7 @@ internal object IncidentPreviewData {
     val activeEmptyState = ActiveIncidentUiState()
 
     val activeErrorState = ActiveIncidentUiState(
-        errorMessage = "Unable to load reports",
+        loadError = IncidentLoadError.Network,
     )
 
     val completedListState = CompletedIncidentUiState(
